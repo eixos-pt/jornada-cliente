@@ -695,6 +695,45 @@ document.getElementById('btn-back').addEventListener('click', () => {
 });
 
 // NIF — only digits
+// ============ AUTO-PREENCHIMENTO NIF VIA API ============
+const NIF_VALIDATION_URL = 'https://eixosautomacao.app.n8n.cloud/webhook/validar-nif';
+
+async function validarEPreencherNIF(nif) {
+  // Apenas validar NIFs com 9 dígitos
+  if (!/^\d{9}$/.test(nif)) return;
+  
+  try {
+    const response = await fetch(NIF_VALIDATION_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({nif: nif})
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.sucesso) {
+        // Preencher campos automaticamente
+        if (data.nome) document.getElementById('nome').value = data.nome;
+        if (data.cae) document.getElementById('cae').value = data.cae;
+        if (data.cidade) document.getElementById('cidade').value = data.cidade;
+        
+        // Feedback visual (opcional)
+        const nifField = document.getElementById('nif');
+        nifField.style.borderColor = 'var(--green)';
+        setTimeout(() => nifField.style.borderColor = '', 2000);
+      }
+    }
+  } catch (error) {
+    console.log('Erro validação NIF:', error);
+    // Silencioso — não alertar utilizador, só log
+  }
+}
+
+// Event listener no campo NIF — validar quando perder foco
+document.getElementById('nif').addEventListener('blur', (e) => {
+  const nif = e.target.value.replace(/\s/g, '');
+  validarEPreencherNIF(nif);
+});
 document.getElementById('nif').addEventListener('input', (e) => {
   e.target.value = e.target.value.replace(/\D/g,'').slice(0,9);
 });
