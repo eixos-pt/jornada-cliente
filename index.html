@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>A sua Jornada · Eixos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0a2540;
+    --deep:#04081a;
+    --bg:#080e22;
+    --bg-2:#0d1530;
+    --paper:#f5f1ea;
+    --cream:#efe9dd;
+    --yellow:#ffd60a;
+    --cyan:#7dd3fc;
+    --green:#27ae60;
+    --orange:#e67e22;
+    --red:#c0392b;
+    --line:rgba(245,241,234,0.07);
+    --line-strong:rgba(245,241,234,0.14);
+    --muted:rgba(245,241,234,0.82);
+    --muted-soft:rgba(245,241,234,0.6);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--deep);color:var(--paper);font-family:'Manrope',system-ui,sans-serif;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+
+  /* ============ SHELL ============ */
+  .shell{
+    min-height:100vh;display:flex;flex-direction:column;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 0%, rgba(255,214,10,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse 70% 60% at 80% 30%, rgba(125,211,252,0.06) 0%, transparent 55%),
+      linear-gradient(180deg, var(--bg-2) 0%, var(--deep) 70%);
+    position:relative;overflow-x:hidden;
+  }
+  .shell::before{
+    content:'';position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+    pointer-events:none;
+  }
+  .shell > *{position:relative;z-index:1}
+
+  /* ============ TOPBAR ============ */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 56px;border-bottom:1px solid var(--line);
+    backdrop-filter:blur(12px);background:rgba(8,14,34,0.6);
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .brand-mark{font-family:'Manrope',sans-serif;font-weight:800;font-size:28px;line-height:1;letter-spacing:-1px}
+  .brand-mark .x{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:28px;height:28px;background:var(--yellow);color:var(--ink);
+    border-radius:7px;font-weight:800;margin:0 2px;transform:translateY(2px);
+  }
+  .brand-tag{
+    font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--yellow);padding-left:14px;border-left:1px solid var(--line-strong);font-weight:600;
+  }
+  .topbar-right{display:flex;align-items:center;gap:24px;font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:0.5px}
+  .topbar-right a{color:var(--muted);text-decoration:none}
+  .topbar-right a:hover{color:var(--paper)}
+
+  /* lang switch */
+  .lang{display:inline-flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:0.5px;background:rgba(0,0,0,0.3)}
+  .lang button{background:transparent;border:none;color:var(--muted);padding:8px 16px;cursor:pointer;font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:uppercase}
+  .lang button.on{background:var(--yellow);color:var(--ink);font-weight:700}
+
+  /* ============ HERO ============ */
+  .hero{padding:72px 56px 40px;max-width:1080px;margin:0 auto;width:100%}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:12px;
+    font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--muted);margin-bottom:28px;
+    padding:10px 18px;border:1px solid var(--line-strong);border-radius:99px;
+    background:rgba(255,214,10,0.04);
+  }
+  .eyebrow .dot{width:8px;height:8px;border-radius:99px;background:var(--yellow);box-shadow:0 0 10px var(--yellow), 0 0 0 4px rgba(255,214,10,0.18)}
+
+  .hero h1{
+    font-family:'Manrope',sans-serif;font-weight:300;
+    font-size:clamp(48px,7vw,96px);line-height:0.96;letter-spacing:-3px;
+    margin:0 0 20px;
+  }
+  .hero h1 strong{font-weight:700}
+  .hero h1 em{font-style:normal;color:var(--paper);font-weight:700}
+  .hero-sub{font-size:18px;line-height:1.5;color:var(--muted);max-width:600px;margin:0}
+
+  /* ============ PROGRESS ============ */
+  .progress-bar{
+    display:flex;align-items:center;gap:14px;margin-top:40px;
+    font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-soft);
+    padding:14px 20px;border:1px solid var(--line-strong);border-radius:14px;
+    background:rgba(255,255,255,0.02);width:fit-content;
+  }
+  .pb-step{display:flex;align-items:center;gap:8px;padding:2px 0;transition:color .25s;white-space:nowrap}
+  .pb-step.active{color:var(--paper)}
+  .pb-step.done{color:var(--yellow)}
+  .pb-num{
+    width:24px;height:24px;border-radius:7px;border:1px solid var(--line-strong);
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+  }
+  .pb-step.active .pb-num{border-color:var(--yellow);background:var(--yellow);color:var(--ink)}
+  .pb-step.done .pb-num{border-color:var(--yellow);background:rgba(255,214,10,0.12);color:var(--yellow)}
+  .pb-bar{flex:0 0 24px;height:1px;background:var(--line-strong)}
+
+  /* ============ STAGE ============ */
+  .stage{padding:24px 56px 96px;max-width:1080px;margin:0 auto;width:100%;flex:1}
+
+  /* ============ CARD ============ */
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%);
+    border:1px solid var(--line-strong);
+    border-radius:20px;padding:40px 44px;position:relative;
+    backdrop-filter:blur(12px);
+    box-shadow:0 1px 0 rgba(255,255,255,0.06) inset, 0 30px 80px -20px rgba(0,0,0,0.5);
+    margin-bottom:24px;
+  }
+  .card::before{
+    content:'';position:absolute;top:0;left:32px;right:32px;height:1px;
+    background:linear-gradient(90deg, transparent, var(--yellow), transparent);opacity:0.6;
+  }
+  .card-head{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:24px;
+    margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--line);
+  }
+  .card-head h2{
+    font-family:'Manrope',sans-serif;font-weight:300;font-size:clamp(28px,5vw,44px);line-height:1.05;letter-spacing:-1.5px;margin:0;
+  }
+  .card-head h2 strong{font-weight:700}
+  .card-head .badge{
+    font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+    padding:8px 14px;border-radius:7px;border:1px solid var(--line-strong);color:var(--muted);
+    background:rgba(0,0,0,0.3);white-space:nowrap;
+  }
+  .card-head .badge.done{border-color:rgba(39,174,96,0.4);color:var(--green);background:rgba(39,174,96,0.08)}
+  .card-head .badge.active{border-color:rgba(255,214,10,0.4);color:var(--yellow);background:rgba(255,214,10,0.08)}
+  .card-helper{font-size:16px;color:var(--muted);margin:12px 0 0;line-height:1.55;max-width:600px}
+
+  /* ============ UPLOAD ZONE ============ */
+  .upload-zone{
+    border:2px dashed var(--line-strong);border-radius:16px;padding:36px 24px;
+    text-align:center;cursor:pointer;transition:all .2s ease;
+    background:rgba(255,255,255,0.02);margin-bottom:20px;
+  }
+  .upload-zone:hover,.upload-zone.dragover{
+    border-color:var(--yellow);background:rgba(255,214,10,0.04);
+  }
+  .upload-zone-icon{font-size:32px;margin-bottom:10px}
+  .upload-zone-title{font-size:15px;font-weight:500;margin-bottom:4px}
+  .upload-zone-hint{font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted-soft);letter-spacing:0.5px}
+
+  /* ============ DOC CHECKLIST ============ */
+  .doc-list{list-style:none;margin:0 0 20px;padding:0}
+  .doc-list li{
+    display:flex;align-items:center;gap:12px;padding:10px 14px;
+    border-radius:10px;margin-bottom:4px;font-size:15px;transition:background .2s;
+  }
+  .doc-list li.uploaded{background:rgba(39,174,96,0.08)}
+  .doc-list li.missing{color:var(--muted-soft)}
+  .doc-dot{
+    width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+    font-size:11px;flex-shrink:0;font-family:'Geist Mono',monospace;font-weight:700;
+  }
+  .doc-dot.check{background:var(--green);color:#fff}
+  .doc-dot.pending{background:rgba(255,255,255,0.04);border:1px solid var(--line-strong);color:var(--muted-soft)}
+  .doc-name{flex:1}
+  .doc-remove{
+    font-size:12px;color:var(--muted-soft);cursor:pointer;background:none;border:none;
+    padding:4px 8px;border-radius:6px;transition:all .2s;font-family:'Geist Mono',monospace;
+  }
+  .doc-remove:hover{color:var(--red);background:rgba(192,57,43,0.1)}
+
+  /* ============ FILE ITEM ============ */
+  .file-item{
+    display:flex;align-items:center;gap:10px;padding:10px 14px;
+    background:rgba(0,0,0,0.25);border:1px solid var(--line);
+    border-radius:10px;margin-bottom:6px;font-size:14px;
+    animation:fadeUp .3s ease forwards;
+  }
+  .file-item-icon{font-size:16px}
+  .file-item-name{flex:1;font-weight:500}
+  .file-item-size{color:var(--muted-soft);font-family:'Geist Mono',monospace;font-size:11px}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  /* ============ ANALYSIS BAR ============ */
+  .analysis-track{
+    height:5px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;margin-bottom:8px;
+  }
+  .analysis-fill{
+    height:100%;border-radius:99px;
+    background:linear-gradient(90deg, var(--green), var(--cyan));
+    transition:width 1s ease;
+  }
+  .analysis-info{
+    display:flex;justify-content:space-between;
+    font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted-soft);letter-spacing:0.5px;
+  }
+
+  /* ============ TIMELINE ============ */
+  .timeline{position:relative;margin:20px 0}
+  .timeline::before{
+    content:'';position:absolute;left:15px;top:16px;bottom:16px;width:2px;
+    background:var(--line-strong);border-radius:2px;
+  }
+  .tl-item{
+    display:flex;align-items:flex-start;gap:16px;padding-bottom:20px;position:relative;
+    opacity:0;animation:fadeUp .4s ease forwards;
+  }
+  .tl-item:last-child{padding-bottom:0}
+  .tl-dot{
+    width:32px;height:32px;border-radius:8px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;z-index:2;font-size:14px;font-weight:700;
+    font-family:'Geist Mono',monospace;transition:transform .2s;
+  }
+  .tl-item:hover .tl-dot{transform:scale(1.08)}
+  .tl-dot.done{background:var(--green);color:#fff;box-shadow:0 0 12px rgba(39,174,96,0.3)}
+  .tl-dot.active{background:var(--yellow);color:var(--ink);box-shadow:0 0 12px rgba(255,214,10,0.3);animation:pulseY 2s infinite}
+  .tl-dot.wait{background:rgba(0,0,0,0.3);border:1px solid var(--line-strong);color:var(--muted-soft)}
+  @keyframes pulseY{0%,100%{box-shadow:0 0 12px rgba(255,214,10,0.3)}50%{box-shadow:0 0 20px rgba(255,214,10,0.5)}}
+
+  .tl-body{flex:1;padding-top:4px}
+  .tl-title{font-size:15px;font-weight:500;line-height:1.3}
+  .tl-meta{font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted-soft);margin-top:2px;letter-spacing:0.3px}
+  .tl-item.wait-item .tl-title,.tl-item.wait-item .tl-meta{color:var(--muted-soft)}
+
+  /* ============ PROPOSAL CARD ============ */
+  .prop-card{
+    background:rgba(0,0,0,0.25);border:1px solid var(--line-strong);
+    border-radius:16px;overflow:hidden;margin:20px 0;
+  }
+  .prop-header{
+    background:linear-gradient(135deg, rgba(255,214,10,0.08), rgba(125,211,252,0.06));
+    padding:20px 24px;border-bottom:1px solid var(--line);
+  }
+  .prop-header h3{font-family:'Manrope',sans-serif;font-weight:600;font-size:18px;margin:0 0 4px}
+  .prop-header p{font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted-soft);letter-spacing:0.5px;margin:0}
+  .prop-body{padding:16px 24px}
+  .prop-line{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;
+  }
+  .prop-line:last-child{border-bottom:none}
+  .prop-label{color:var(--muted);font-weight:300}
+  .prop-value{font-weight:600;text-align:right}
+  .prop-value .flag{
+    display:inline-block;font-family:'Geist Mono',monospace;font-size:10px;font-weight:600;
+    color:var(--orange);background:rgba(230,126,34,0.12);
+    padding:2px 6px;border-radius:4px;margin-left:6px;letter-spacing:0.5px;vertical-align:middle;
+  }
+  .prop-total{
+    display:flex;justify-content:space-between;padding:18px 24px;
+    background:rgba(255,214,10,0.06);font-size:18px;font-weight:700;
+    border-top:1px solid var(--line);
+  }
+  .prop-note{
+    padding:14px 24px;font-family:'Geist Mono',monospace;font-size:11px;
+    color:var(--muted-soft);border-top:1px solid var(--line);line-height:1.5;letter-spacing:0.3px;
+  }
+
+  /* ============ CTA BUTTONS ============ */
+  .cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+  @media(max-width:480px){.cta-grid{grid-template-columns:1fr}}
+
+  .cta-btn{
+    text-align:center;padding:28px 20px;border:1px solid var(--line-strong);
+    border-radius:16px;background:rgba(255,255,255,0.02);cursor:pointer;
+    color:var(--paper);font-family:inherit;transition:all .2s ease;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    position:relative;overflow:hidden;
+  }
+  .cta-btn::after{
+    content:'';position:absolute;inset:0;border-radius:16px;opacity:0;transition:opacity .25s;pointer-events:none;
+  }
+  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px -8px rgba(0,0,0,0.4)}
+  .cta-btn:hover::after{opacity:1}
+
+  .cta-btn.accept{border-color:rgba(39,174,96,0.25)}
+  .cta-btn.accept::after{background:radial-gradient(circle at 50% 0%, rgba(39,174,96,0.1) 0%, transparent 60%)}
+  .cta-btn.accept:hover{border-color:var(--green)}
+
+  .cta-btn.reject{border-color:rgba(192,57,43,0.15)}
+  .cta-btn.reject::after{background:radial-gradient(circle at 50% 0%, rgba(192,57,43,0.08) 0%, transparent 60%)}
+  .cta-btn.reject:hover{border-color:var(--red)}
+
+  .cta-icon{font-size:28px}
+  .cta-label{font-size:16px;font-weight:600}
+  .cta-hint{font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted-soft);letter-spacing:0.5px}
+
+  /* ============ REJECT AREA ============ */
+  .reject-area{display:none;margin-top:16px;animation:fadeUp .3s ease forwards}
+  .reject-area.show{display:block}
+  .reject-textarea{
+    width:100%;min-height:80px;padding:14px 18px;
+    background:rgba(0,0,0,0.25);border:1px solid var(--line-strong);border-radius:11px;
+    color:var(--paper);font-family:'Manrope',sans-serif;font-size:15px;resize:vertical;
+    margin-bottom:12px;transition:border-color .15s;
+  }
+  .reject-textarea:focus{outline:none;border-color:var(--yellow);box-shadow:0 0 0 3px rgba(255,214,10,0.12)}
+  .reject-textarea::placeholder{color:var(--muted-soft)}
+
+  /* ============ BUTTONS ============ */
+  .btn{
+    padding:14px 28px;border-radius:11px;border:1px solid transparent;cursor:pointer;
+    font-family:'Manrope',sans-serif;font-size:15px;font-weight:600;letter-spacing:0.2px;
+    display:inline-flex;align-items:center;gap:8px;transition:all .15s ease;
+  }
+  .btn-primary{
+    background:var(--yellow);color:var(--ink);
+    box-shadow:0 8px 24px -6px rgba(255,214,10,0.4), 0 0 0 1px var(--yellow);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 36px -6px rgba(255,214,10,0.55), 0 0 0 1px var(--yellow)}
+  .btn-primary:disabled{background:rgba(245,241,234,0.08);color:var(--muted-soft);cursor:not-allowed;transform:none;box-shadow:none}
+  .btn-ghost{background:transparent;color:var(--muted);border-color:var(--line-strong)}
+  .btn-ghost:hover{color:var(--paper);border-color:var(--paper)}
+  .btn-full{width:100%;justify-content:center}
+  .btn-link{background:none;border:none;color:var(--cyan);padding:8px 0;font-size:13px;cursor:pointer;font-family:'Manrope',sans-serif;font-weight:500}
+  .btn-link:hover{text-decoration:underline}
+
+  /* ============ ALERTS ============ */
+  .alert{
+    display:flex;align-items:flex-start;gap:14px;padding:16px 20px;
+    border-radius:14px;font-size:14px;line-height:1.5;margin:16px 0;
+    border:1px solid var(--line);
+  }
+  .alert-info{background:rgba(125,211,252,0.06);border-color:rgba(125,211,252,0.2);color:var(--cyan)}
+  .alert-success{background:rgba(39,174,96,0.06);border-color:rgba(39,174,96,0.2);color:var(--green)}
+  .alert-warning{background:rgba(230,126,34,0.06);border-color:rgba(230,126,34,0.2);color:var(--orange)}
+  .alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+
+  /* ============ SUCCESS ============ */
+  .success-block{text-align:center;padding:32px 0 16px}
+  .success-mark{
+    width:80px;height:80px;border-radius:20px;background:rgba(39,174,96,0.12);
+    border:1px solid rgba(39,174,96,0.3);display:inline-flex;align-items:center;justify-content:center;
+    margin-bottom:24px;font-size:36px;color:var(--green);font-weight:700;
+    box-shadow:0 0 40px -8px rgba(39,174,96,0.4);
+  }
+  .success-block h2{
+    font-family:'Manrope',sans-serif;font-weight:300;font-size:clamp(28px,5vw,48px);
+    line-height:1.05;letter-spacing:-1.5px;margin:0 0 12px;
+  }
+  .success-block h2 strong{font-weight:700;color:var(--yellow)}
+  .success-block p{font-size:16px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.6}
+
+  /* ============ ONBOARDING LIST ============ */
+  .onb-card{
+    background:rgba(0,0,0,0.25);border:1px solid var(--line-strong);
+    border-radius:16px;padding:24px;margin:20px 0;
+  }
+  .onb-card h4{font-size:16px;font-weight:600;margin:0 0 16px}
+  .onb-list{list-style:none;padding:0;margin:0}
+  .onb-list li{
+    display:flex;align-items:flex-start;gap:12px;padding:10px 0;
+    font-size:14px;color:var(--muted);border-bottom:1px solid var(--line);
+  }
+  .onb-list li:last-child{border-bottom:none}
+  .onb-list .num{
+    width:24px;height:24px;border-radius:7px;background:rgba(255,214,10,0.12);
+    color:var(--yellow);display:flex;align-items:center;justify-content:center;
+    font-family:'Geist Mono',monospace;font-size:11px;font-weight:700;flex-shrink:0;
+  }
+
+  /* ============ TOAST ============ */
+  .toast-wrap{position:fixed;top:80px;right:24px;z-index:1000;display:flex;flex-direction:column;gap:8px}
+  .toast{
+    padding:12px 20px;border-radius:11px;font-size:14px;font-weight:500;
+    box-shadow:0 8px 24px -6px rgba(0,0,0,0.4);
+    animation:toastIn .3s ease, toastOut .3s ease 4.7s forwards;max-width:340px;
+  }
+  .toast-success{background:var(--green);color:#fff}
+  .toast-error{background:var(--red);color:#fff}
+  .toast-info{background:var(--cyan);color:var(--ink)}
+  @keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-8px)}}
+
+  /* ============ SPINNER ============ */
+  .spinner{
+    width:16px;height:16px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;
+    border-radius:50%;animation:spin .7s linear infinite;display:inline-block;
+  }
+  .spinner.dark{border-color:rgba(0,0,0,0.15);border-top-color:var(--ink)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ============ HIDDEN ============ */
+  .hidden{display:none !important}
+
+  /* ============ PANEL EXPAND ============ */
+  .panel{max-height:0;opacity:0;overflow:hidden;transition:max-height .5s cubic-bezier(.22,1,.36,1), opacity .3s ease}
+  .panel.open{max-height:1200px;opacity:1}
+
+  /* ============ FOOTER ============ */
+  .footer{
+    border-top:1px solid var(--line);padding:32px 56px;
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted-soft);letter-spacing:0.5px;
+    background:rgba(0,0,0,0.3);
+  }
+  .footer a{color:var(--muted);text-decoration:none}
+  .footer a:hover{color:var(--paper)}
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:760px){
+    .topbar,.hero,.stage,.footer{padding-left:24px;padding-right:24px}
+    .topbar{flex-direction:column;gap:14px;align-items:flex-start}
+    .topbar-right{flex-wrap:wrap;gap:14px}
+    .hero{padding-top:48px}
+    .card{padding:28px 20px}
+    .card-head{flex-direction:column;gap:14px}
+    .card-head h2{font-size:28px}
+    .progress-bar{flex-wrap:wrap}
+    .footer{flex-direction:column;gap:10px;text-align:left;align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">ei<span class="x">x</span>os.</div>
+    <div class="brand-tag">Contabilidade Estratégica</div>
+  </div>
+  <div class="topbar-right">
+    <a href="mailto:geral@eixos.pt">geral@eixos.pt</a>
+    <span style="opacity:0.4">·</span>
+    <a href="tel:+351215907738">+351 215 907 738</a>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-lang="pt" class="on">PT</button>
+      <button data-lang="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">
+    <span class="dot"></span>
+    <span data-t="eyebrow">Acompanhamento em tempo real</span>
+  </div>
+  <h1 data-t="hero_title">Bem-vindo à <em>Eixos</em>.</h1>
+  <p class="hero-sub" id="hero-sub" data-t="hero_sub_loading">A carregar os seus dados...</p>
+
+  <div class="progress-bar" id="progress-bar">
+    <div class="pb-step active" data-s="1"><div class="pb-num">1</div><span data-t="pb_1">Documentos</span></div>
+    <div class="pb-bar"></div>
+    <div class="pb-step" data-s="2"><div class="pb-num">2</div><span data-t="pb_2">Análise</span></div>
+    <div class="pb-bar"></div>
+    <div class="pb-step" data-s="3"><div class="pb-num">3</div><span data-t="pb_3">Proposta</span></div>
+    <div class="pb-bar"></div>
+    <div class="pb-step" data-s="4"><div class="pb-num">4</div><span data-t="pb_4">Contrato</span></div>
+    <div class="pb-bar"></div>
+    <div class="pb-step" data-s="5"><div class="pb-num">5</div><span data-t="pb_5">Onboarding</span></div>
+  </div>
+</section>
+
+<!-- STAGE -->
+<main class="stage">
+
+  <!-- ═══ CARD 1: UPLOAD ═══ -->
+  <article class="card" id="card-upload">
+    <div class="card-head">
+      <div>
+        <h2 data-t="c1_title">Carregue os seus <strong>documentos</strong></h2>
+        <p class="card-helper" data-t="c1_helper">Enviamos a lista dos documentos que precisamos para preparar a sua proposta. Pode carregar múltiplos ficheiros.</p>
+      </div>
+      <span class="badge active" id="badge-upload">Passo 1 / 5</span>
+    </div>
+
+    <ul class="doc-list" id="doc-list">
+      <li class="missing" data-doc="modelo22"><div class="doc-dot pending">○</div><span class="doc-name">Modelo 22 (última disponível)</span></li>
+      <li class="missing" data-doc="ies"><div class="doc-dot pending">○</div><span class="doc-name">IES (última disponível)</span></li>
+      <li class="missing" data-doc="balancete"><div class="doc-dot pending">○</div><span class="doc-name">Balancete (último disponível)</span></li>
+      <li class="missing" data-doc="efatura"><div class="doc-dot pending">○</div><span class="doc-name">Listagem e-Fatura (último ano)</span></li>
+      <li class="missing" data-doc="certidao"><div class="doc-dot pending">○</div><span class="doc-name">Certidão Permanente</span></li>
+    </ul>
+
+    <div class="upload-zone" id="upload-zone">
+      <div class="upload-zone-icon">📄</div>
+      <div class="upload-zone-title" data-t="uz_title">Arraste ficheiros ou clique para selecionar</div>
+      <div class="upload-zone-hint" data-t="uz_hint">PDF, EXCEL, WORD · MÁX. 50 MB</div>
+    </div>
+    <input type="file" id="file-input" multiple accept=".pdf,.xlsx,.xls,.doc,.docx,.csv" style="display:none">
+    <div id="file-list"></div>
+
+    <div class="alert alert-info hidden" id="partial-alert">
+      <span class="alert-icon">ℹ️</span>
+      <span>Pode avançar sem todos os documentos. A proposta usará valores estimados.</span>
+    </div>
+
+    <div style="margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <button class="btn-link" id="btn-skip" data-t="btn_skip">Avançar sem documentos</button>
+      <button class="btn btn-primary" id="btn-upload" disabled data-t="btn_upload">Concluir upload →</button>
+    </div>
+  </article>
+
+  <!-- ═══ CARD 2: ANÁLISE ═══ -->
+  <article class="card hidden" id="card-analysis">
+    <div class="card-head">
+      <div>
+        <h2 data-t="analysis_title">Análise em <strong>curso</strong></h2>
+        <p class="card-helper" data-t="analysis_helper">Estamos a analisar os seus documentos. Isto demora tipicamente 24 a 48 horas.</p>
+      </div>
+      <span class="badge active">Passo 2 / 5</span>
+    </div>
+
+    <div class="timeline" id="analysis-timeline">
+      <div class="tl-item" style="animation-delay:.05s">
+        <div class="tl-dot done">✓</div>
+        <div class="tl-body">
+          <div class="tl-title">Documentos recebidos</div>
+          <div class="tl-meta" id="tl-upload-date">—</div>
+        </div>
+      </div>
+      <div class="tl-item" style="animation-delay:.12s">
+        <div class="tl-dot active" id="tl-dot-analysis">⏳</div>
+        <div class="tl-body">
+          <div class="tl-title">Análise em curso</div>
+          <div class="tl-meta">A equipa está a rever os seus dados</div>
+        </div>
+      </div>
+      <div class="tl-item wait-item" style="animation-delay:.19s">
+        <div class="tl-dot wait" id="tl-dot-gen">—</div>
+        <div class="tl-body">
+          <div class="tl-title">Proposta em geração</div>
+          <div class="tl-meta">—</div>
+        </div>
+      </div>
+      <div class="tl-item wait-item" style="animation-delay:.26s">
+        <div class="tl-dot wait" id="tl-dot-sent">—</div>
+        <div class="tl-body">
+          <div class="tl-title">Proposta enviada</div>
+          <div class="tl-meta">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <div class="analysis-track"><div class="analysis-fill" id="analysis-fill" style="width:0%"></div></div>
+      <div class="analysis-info"><span id="analysis-pct">0%</span><span id="analysis-eta">Tempo estimado: até 24h</span></div>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">📧</span>
+      <span>Receberá um email quando a proposta estiver pronta. Não precisa de ficar nesta página.</span>
+    </div>
+  </article>
+
+  <!-- ═══ CARD 3: PROPOSTA + DECISÃO ═══ -->
+  <article class="card hidden" id="card-proposal">
+    <div class="card-head">
+      <div>
+        <h2 data-t="prop_title">A sua <strong>proposta</strong></h2>
+        <p class="card-helper" data-t="prop_helper">Preparámos uma proposta personalizada com base nos documentos que nos enviou.</p>
+      </div>
+      <span class="badge active">Passo 3 / 5</span>
+    </div>
+
+    <div class="prop-card">
+      <div class="prop-header">
+        <h3>Eixos — Proposta Orçamental</h3>
+        <p>Cliente: <strong id="prop-client">—</strong> · Data: <strong id="prop-date">—</strong></p>
+      </div>
+      <div class="prop-body">
+        <div class="prop-line"><span class="prop-label">Contabilidade Mensal</span><span class="prop-value" id="pv-contab">—</span></div>
+        <div class="prop-line"><span class="prop-label">Imposto Selo (4%)</span><span class="prop-value" id="pv-selo">—</span></div>
+        <div class="prop-line"><span class="prop-label">Processamento Salarial</span><span class="prop-value" id="pv-sal">—</span></div>
+        <div class="prop-line"><span class="prop-label">Trabalhos Específicos</span><span class="prop-value" id="pv-esp">—</span></div>
+      </div>
+      <div class="prop-total"><span>Total Anual</span><span id="pv-total">—</span></div>
+      <div class="prop-note">⚠️ Valores marcados como [ESTIMADO] serão confirmados no contrato final.</div>
+    </div>
+
+    <div class="cta-grid" id="cta-buttons">
+      <div class="cta-btn accept" id="btn-accept">
+        <div class="cta-icon">✓</div>
+        <div class="cta-label">Aceito</div>
+        <div class="cta-hint">Avançar para contrato</div>
+      </div>
+      <div class="cta-btn reject" id="btn-reject">
+        <div class="cta-icon">✗</div>
+        <div class="cta-label">Recuso</div>
+        <div class="cta-hint">Indicar motivo</div>
+      </div>
+    </div>
+
+    <div class="reject-area" id="reject-area">
+      <textarea class="reject-textarea" id="reject-reason" placeholder="Ex.: Preço acima do orçamento, optei por outro prestador..."></textarea>
+      <button class="btn btn-primary btn-full" id="btn-send-reject">Enviar feedback →</button>
+    </div>
+
+    <div class="success-block hidden" id="reject-success">
+      <div class="success-mark">🤝</div>
+      <h2>Obrigado pelo <strong>feedback</strong></h2>
+      <p>A Susana vai contactá-lo nos próximos dias para perceber como podemos ajudar.</p>
+    </div>
+
+    <div style="text-align:center;margin-top:12px">
+      <button class="btn btn-ghost" id="btn-download-prop">📥 Descarregar proposta (PDF)</button>
+    </div>
+  </article>
+
+  <!-- ═══ CARD 4: CONTRATO ═══ -->
+  <article class="card hidden" id="card-contract">
+    <div class="card-head">
+      <div>
+        <h2 data-t="contract_title">Assinatura do <strong>contrato</strong></h2>
+        <p class="card-helper" data-t="contract_helper">O contrato está a ser preparado. Receberá um email para assinar via DocuSign.</p>
+      </div>
+      <span class="badge active">Passo 4 / 5</span>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item" style="animation-delay:.05s"><div class="tl-dot done">✓</div><div class="tl-body"><div class="tl-title">Proposta aceite</div><div class="tl-meta" id="contract-accepted-date">—</div></div></div>
+      <div class="tl-item" style="animation-delay:.12s"><div class="tl-dot active">📋</div><div class="tl-body"><div class="tl-title">Contrato em preparação</div><div class="tl-meta">Susana está a validar e preparar o contrato</div></div></div>
+      <div class="tl-item wait-item" style="animation-delay:.19s"><div class="tl-dot wait">—</div><div class="tl-body"><div class="tl-title">Assinatura digital via DocuSign</div><div class="tl-meta">Receberá link no email</div></div></div>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">📧</span>
+      <span>Quando Susana validar, receberá o contrato no seu email para assinar digitalmente em menos de 2 minutos.</span>
+    </div>
+  </article>
+
+  <!-- ═══ CARD 5: ONBOARDING ═══ -->
+  <article class="card hidden" id="card-onboarding">
+    <div class="card-head">
+      <div>
+        <h2 data-t="onb_title">Bem-vindo à <strong>Eixos</strong> 🎉</h2>
+        <p class="card-helper" data-t="onb_helper">A sua proposta foi aceite. Vamos preparar tudo para começar a trabalhar juntos.</p>
+      </div>
+      <span class="badge done">Concluído</span>
+    </div>
+
+    <div class="onb-card">
+      <h4>📋 Próximos passos (48 horas)</h4>
+      <ul class="onb-list">
+        <li><span class="num">1</span><span>Susana revê e valida a proposta. Receberá o contrato via DocuSign.</span></li>
+        <li><span class="num">2</span><span>Assine digitalmente — basta clicar no link do email.</span></li>
+        <li><span class="num">3</span><span>Agendamos a 1ª sessão de onboarding — setup, dados bancários, acessos.</span></li>
+      </ul>
+    </div>
+
+    <div class="alert alert-success">
+      <span class="alert-icon">🔒</span>
+      <span>Os seus documentos estão seguros e serão migrados para a plataforma Eixos após assinatura.</span>
+    </div>
+  </article>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div>© 2026 <strong style="color:var(--paper);font-weight:500">Eixos</strong> · <span data-t="footer_tag">Contabilidade Estratégica</span></div>
+  <div style="display:flex;gap:18px">
+    <a href="https://eixos.pt" target="_blank" rel="noopener">eixos.pt</a>
+    <a href="#">Política de Privacidade</a>
+    <a href="#">Termos</a>
+  </div>
+</footer>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   EIXOS VERA — Jornada do Cliente (MVP v3)
+   Design: Dark tech — Manrope + Geist Mono + Yellow
+   ═══════════════════════════════════════════════════ */
+
+// ── TRANSLATIONS ──
+const T = {
+  pt: {
+    eyebrow:'Acompanhamento em tempo real',
+    hero_title:'Bem-vindo à <em>Eixos</em>.',
+    hero_sub_loading:'A carregar os seus dados...',
+    pb_1:'Documentos',pb_2:'Análise',pb_3:'Proposta',pb_4:'Contrato',pb_5:'Onboarding',
+    c1_title:'Carregue os seus <strong>documentos</strong>',
+    c1_helper:'Enviamos a lista dos documentos que precisamos para preparar a sua proposta. Pode carregar múltiplos ficheiros.',
+    uz_title:'Arraste ficheiros ou clique para selecionar',uz_hint:'PDF, EXCEL, WORD · MÁX. 50 MB',
+    btn_skip:'Avançar sem documentos',btn_upload:'Concluir upload →',
+    partial_alert:'Pode avançar sem todos os documentos. A proposta usará valores estimados.',
+    analysis_title:'Análise em <strong>curso</strong>',
+    analysis_helper:'Estamos a analisar os seus documentos. Isto demora tipicamente 24 a 48 horas.',
+    tl_docs:'Documentos recebidos',tl_analysis:'Análise em curso',tl_gen:'Proposta em geração',tl_sent:'Proposta enviada',
+    analysis_email:'Receberá um email quando a proposta estiver pronta. Não precisa de ficar nesta página.',
+    prop_title:'A sua <strong>proposta</strong>',prop_helper:'Preparámos uma proposta personalizada com base nos documentos que nos enviou.',
+    prop_contab:'Contabilidade Mensal',prop_selo:'Imposto Selo (4%)',prop_sal:'Processamento Salarial',prop_esp:'Trabalhos Específicos',
+    prop_total:'Total Anual',prop_note:'⚠️ Valores marcados como [ESTIMADO] serão confirmados no contrato final.',
+    cta_accept:'Aceito',cta_accept_hint:'Avançar para contrato',cta_reject:'Recuso',cta_reject_hint:'Indicar motivo',
+    reject_placeholder:'Ex.: Preço acima do orçamento, optei por outro prestador...',reject_send:'Enviar feedback →',
+    reject_thanks_title:'Obrigado pelo <strong>feedback</strong>',reject_thanks_sub:'A Susana vai contactá-lo nos próximos dias para perceber como podemos ajudar.',
+    download_prop:'📥 Descarregar proposta (PDF)',
+    contract_title:'Assinatura do <strong>contrato</strong>',contract_helper:'O contrato está a ser preparado. Receberá um email para assinar via DocuSign.',
+    contract_accepted:'Proposta aceite',contract_prep:'Contrato em preparação',contract_prep_meta:'Susana está a validar e preparar o contrato',
+    contract_sign:'Assinatura digital via DocuSign',contract_sign_meta:'Receberá link no email',
+    contract_docusign_title:'O contrato está a ser preparado',contract_docusign_sub:'Quando Susana validar, receberá o contrato no seu email para assinar digitalmente em menos de 2 minutos.',
+    onb_title:'Bem-vindo à <strong>Eixos</strong> 🎉',onb_helper:'A sua proposta foi aceite. Vamos preparar tudo para começar a trabalhar juntos.',
+    onb_next:'📋 Próximos passos (48 horas)',
+    onb_1:'Susana revê e valida a proposta. Receberá o contrato via DocuSign.',
+    onb_2:'Assine digitalmente — basta clicar no link do email.',
+    onb_3:'Agendamos a 1ª sessão de onboarding — setup, dados bancários, acessos.',
+    onb_secure:'Os seus documentos estão seguros e serão migrados para a plataforma Eixos após assinatura.',
+    footer_tag:'Contabilidade Estratégica',
+  },
+  en: {
+    eyebrow:'Real-time tracking',
+    hero_title:'Welcome to <em>Eixos</em>.',
+    hero_sub_loading:'Loading your data...',
+    pb_1:'Documents',pb_2:'Analysis',pb_3:'Proposal',pb_4:'Contract',pb_5:'Onboarding',
+    c1_title:'Upload your <strong>documents</strong>',
+    c1_helper:'We sent a list of the documents we need to prepare your proposal. You can upload multiple files at once.',
+    uz_title:'Drag files or click to select',uz_hint:'PDF, EXCEL, WORD · MAX 50 MB',
+    btn_skip:'Continue without documents',btn_upload:'Complete upload →',
+    partial_alert:'You can continue without all documents. The proposal will use estimated values.',
+    analysis_title:'Analysis <strong>in progress</strong>',
+    analysis_helper:'We are analysing your documents. This typically takes 24 to 48 hours.',
+    tl_docs:'Documents received',tl_analysis:'Analysis in progress',tl_gen:'Proposal being generated',tl_sent:'Proposal sent',
+    analysis_email:'You will receive an email when the proposal is ready. You don\'t need to stay on this page.',
+    prop_title:'Your <strong>proposal</strong>',prop_helper:'We prepared a personalised proposal based on the documents you sent us.',
+    prop_contab:'Monthly Accounting',prop_selo:'Stamp Tax (4%)',prop_sal:'Payroll Processing',prop_esp:'Specific Work',
+    prop_total:'Annual Total',prop_note:'⚠️ Values marked [ESTIMATED] will be confirmed in the final contract.',
+    cta_accept:'Accept',cta_accept_hint:'Proceed to contract',cta_reject:'Decline',cta_reject_hint:'Tell us why',
+    reject_placeholder:'E.g.: Price above budget, chose another provider...',reject_send:'Send feedback →',
+    reject_thanks_title:'Thank you for the <strong>feedback</strong>',reject_thanks_sub:'Susana will contact you in the next few days to understand how we can help.',
+    download_prop:'📥 Download proposal (PDF)',
+    contract_title:'Contract <strong>signature</strong>',contract_helper:'The contract is being prepared. You will receive an email to sign via DocuSign.',
+    contract_accepted:'Proposal accepted',contract_prep:'Contract in preparation',contract_prep_meta:'Susana is validating and preparing the contract',
+    contract_sign:'Digital signature via DocuSign',contract_sign_meta:'You will receive a link via email',
+    contract_docusign_title:'The contract is being prepared',contract_docusign_sub:'Once Susana validates, you will receive the contract via email to sign digitally in under 2 minutes.',
+    onb_title:'Welcome to <strong>Eixos</strong> 🎉',onb_helper:'Your proposal has been accepted. We are preparing everything to start working together.',
+    onb_next:'📋 Next steps (48 hours)',
+    onb_1:'Susana reviews and validates the proposal. You will receive the contract via DocuSign.',
+    onb_2:'Sign digitally — just click the link in the email.',
+    onb_3:'We schedule the 1st onboarding session — setup, bank details, access.',
+    onb_secure:'Your documents are secure and will be migrated to the Eixos platform after signature.',
+    footer_tag:'Strategic Accounting',
+  }
+};
+
+let LANG = 'pt';
+
+function applyLang(lang){
+  LANG = lang;
+  document.documentElement.lang = lang === 'pt' ? 'pt-PT' : 'en';
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const k = el.getAttribute('data-t');
+    if (T[lang] && T[lang][k] !== undefined) el.innerHTML = T[lang][k];
+  });
+  document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+}
+
+document.querySelectorAll('.lang button').forEach(b => {
+  b.addEventListener('click', () => applyLang(b.dataset.lang));
+});
+
+const CFG = {
+  base: 'https://eixosautomacao.app.n8n.cloud/webhook',
+  ep: { upload:'/upload-documento', status:'/jornada-status', accept:'/proposta-aceito', reject:'/proposta-recuso', proposal:'/proposta' },
+  poll: 60000, aMin: 24, aMax: 48
+};
+
+let S = { token:null, name:'', nif:'', files:[], uploadTs:null, propData:null };
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  const p = new URLSearchParams(location.search);
+  S.token = p.get('token') || pathToken();
+  if (p.get('demo')==='true') { initDemo(); return; }
+  if (S.token) loadState(); else setHero('Verifique o link recebido no email');
+  bindAll();
+});
+
+function pathToken(){ const s=location.pathname.split('/'); const l=s[s.length-1]; return (l&&l!=='index.html')?l:null; }
+function setHero(t){ document.getElementById('hero-sub').textContent=t; }
+
+// ── LOAD STATE ──
+async function loadState(){
+  try {
+    const r = await fetch(`${CFG.base}${CFG.ep.status}?token=${S.token}`);
+    if (!r.ok) throw 0;
+    const d = await r.json();
+    S.name=d.nome||''; S.nif=d.nif||''; S.uploadTs=d.upload_timestamp||null; S.propData=d.proposta||null;
+    setHero(`${S.name}${S.nif?' · NIF '+S.nif:''}`);
+    applyEstado(d.estado);
+  } catch { setHero('Bem-vindo à Eixos'); showCard('upload'); }
+}
+
+function applyEstado(e){
+  const m={
+    '01 · Lead Recebido':'upload',
+    '02 · Telefonema Inicial':'upload',
+    '03 · Pedido de Dados Enviado':'upload',
+    '05 · Dados em Falta':'upload',
+    '06 · Em Análise':'analysis',
+    '07 · Proposta Validada':'analysis',
+    '08 · Proposta Enviada':'proposal',
+    '09 · Follow-up Comercial':'proposal',
+    '10 · Aceite':'contract',
+    '11 · Recusado':'proposal',
+    '12 · Suspenso':'proposal',
+    '13 · Contrato Enviado':'contract',
+    '14 · Contrato Assinado':'onboarding',
+    '16 · Onboarding':'onboarding'
+  };
+  showCard(m[e]||'upload');
+  if (m[e]==='analysis'){ startPoll(); updateAnalysis(); }
+  if (m[e]==='proposal') loadProposal();
+}
+
+function showCard(id){
+  ['upload','analysis','proposal','contract','onboarding'].forEach(c => {
+    document.getElementById('card-'+c).classList.toggle('hidden', c!==id);
+  });
+  updateProgress(id);
+}
+
+function updateProgress(id){
+  const map={upload:1,analysis:2,proposal:3,contract:4,onboarding:5};
+  const cur=map[id]||1;
+  document.querySelectorAll('.pb-step').forEach(el=>{
+    const n=parseInt(el.dataset.s);
+    el.classList.remove('active','done');
+    if(n<cur) el.classList.add('done');
+    if(n===cur) el.classList.add('active');
+  });
+}
+
+// ── BIND ──
+function bindAll(){
+  const zone=document.getElementById('upload-zone');
+  const inp=document.getElementById('file-input');
+  zone.addEventListener('click',()=>inp.click());
+  zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dragover')});
+  zone.addEventListener('dragleave',()=>zone.classList.remove('dragover'));
+  zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('dragover');handleFiles(e.dataTransfer.files)});
+  inp.addEventListener('change',e=>handleFiles(e.target.files));
+  document.getElementById('btn-upload').addEventListener('click',()=>submitUpload(false));
+  document.getElementById('btn-skip').addEventListener('click',()=>{if(confirm('Avançar sem documentos? A proposta usará valores estimados.'))submitUpload(true)});
+  document.getElementById('btn-accept').addEventListener('click',handleAccept);
+  document.getElementById('btn-reject').addEventListener('click',()=>{document.getElementById('cta-buttons').classList.add('hidden');document.getElementById('reject-area').classList.add('show')});
+  document.getElementById('btn-send-reject').addEventListener('click',sendReject);
+  document.getElementById('btn-download-prop').addEventListener('click',()=>toast('PDF a gerar...','info'));
+}
+
+// ── UPLOAD ──
+function handleFiles(files){
+  const list=document.getElementById('file-list');
+  Array.from(files).forEach(f=>{
+    if(f.size>50*1024*1024){toast(f.name+' excede 50 MB.','error');return}
+    S.files.push(f);
+    const d=document.createElement('div');d.className='file-item';
+    d.innerHTML=`<span class="file-item-icon">📄</span><span class="file-item-name">${f.name}</span><span class="file-item-size">${fmtSize(f.size)}</span><button class="doc-remove" onclick="rmFile(this,'${f.name}')">✕</button>`;
+    list.appendChild(d);
+    autoCheck(f.name);
+  });
+  updBtn();
+}
+window.rmFile=function(el,n){S.files=S.files.filter(f=>f.name!==n);el.closest('.file-item').remove();updBtn()};
+
+function autoCheck(fn){
+  const l=fn.toLowerCase();
+  const m={modelo:'modelo22',mod22:'modelo22',ies:'ies',balanc:'balancete',certid:'certidao',fatura:'efatura',efatura:'efatura'};
+  for(const[k,v]of Object.entries(m)){if(l.includes(k)){markDoc(v);break}}
+}
+function markDoc(t){
+  const li=document.querySelector(`[data-doc="${t}"]`);
+  if(li&&!li.classList.contains('uploaded')){li.classList.remove('missing');li.classList.add('uploaded');const d=li.querySelector('.doc-dot');d.className='doc-dot check';d.textContent='✓'}
+}
+function updBtn(){
+  document.getElementById('btn-upload').disabled=S.files.length===0;
+  const up=document.querySelectorAll('.doc-list .uploaded').length;
+  document.getElementById('partial-alert').classList.toggle('hidden',!(S.files.length>0&&up<4));
+}
+
+async function submitUpload(skip){
+  const btn=document.getElementById('btn-upload');
+  btn.disabled=true;btn.innerHTML='<span class="spinner dark"></span> A enviar...';
+  try{
+    if(!skip&&S.files.length>0){
+      for(const f of S.files){
+        const fd=new FormData();fd.append('file',f);fd.append('token',S.token);fd.append('tipo',detectType(f.name));
+        await fetch(`${CFG.base}${CFG.ep.upload}`,{method:'POST',body:fd});
+      }
+    }
+    S.uploadTs=new Date().toISOString();
+    toast('Documentos enviados com sucesso!','success');
+    setTimeout(()=>{showCard('analysis');startPoll();updateAnalysis()},600);
+  }catch{toast('Erro ao enviar. Tente novamente.','error');btn.disabled=false;btn.textContent='Concluir upload →'}
+}
+function detectType(n){const l=n.toLowerCase();if(l.includes('modelo')||l.includes('mod22'))return'modelo22';if(l.includes('ies'))return'ies';if(l.includes('balanc'))return'balancete';if(l.includes('certid'))return'certidao';if(l.includes('fatura'))return'efatura';return'outro'}
+
+// ── POLL ──
+let pollT=null;
+function startPoll(){
+  updateAnalysis();
+  document.getElementById('tl-upload-date').textContent=S.uploadTs?fmtDate(S.uploadTs):'—';
+  pollT=setInterval(async()=>{
+    updateAnalysis();
+    try{
+      const r=await fetch(`${CFG.base}${CFG.ep.status}?token=${S.token}`);if(!r.ok)return;
+      const d=await r.json();
+      if(d.estado==='08 · Proposta Enviada'){clearInterval(pollT);toast('Proposta pronta!','success');S.propData=d.proposta;setTimeout(()=>{showCard('proposal');loadProposal()},1200)}
+    }catch{}
+  },CFG.poll);
+}
+function updateAnalysis(){
+  if(!S.uploadTs)return;
+  const h=(Date.now()-new Date(S.uploadTs))/36e5;
+  let p,eta;
+  if(h<CFG.aMin){p=Math.round(h/CFG.aMin*50);eta=`Tempo estimado: até ${Math.round(CFG.aMin-h)}h`}
+  else if(h<CFG.aMax){p=50+Math.round((h-CFG.aMin)/CFG.aMin*45);eta=`Tempo estimado: até ${Math.round(CFG.aMax-h)}h`}
+  else{p=95;eta='Proposta em revisão final'}
+  p=Math.min(p,95);
+  document.getElementById('analysis-fill').style.width=p+'%';
+  document.getElementById('analysis-pct').textContent=p+'%';
+  document.getElementById('analysis-eta').textContent=eta;
+}
+
+// ── PROPOSAL ──
+async function loadProposal(){
+  if(S.propData){renderProp(S.propData);return}
+  try{const r=await fetch(`${CFG.base}${CFG.ep.proposal}?token=${S.token}`);if(!r.ok)throw 0;S.propData=await r.json();renderProp(S.propData)}
+  catch{renderProp({contabilidade:250,selo:10,salarios:50,especificos:100,especificos_estimado:true,total_anual:4920})}
+}
+function renderProp(d){
+  document.getElementById('prop-client').textContent=S.name||'Cliente';
+  document.getElementById('prop-date').textContent=new Date().toLocaleDateString('pt-PT');
+  const f=v=>`€${Number(v).toLocaleString('pt-PT')}/mês`;
+  document.getElementById('pv-contab').textContent=f(d.contabilidade||0);
+  document.getElementById('pv-selo').textContent=f(d.selo||0);
+  document.getElementById('pv-sal').textContent=f(d.salarios||0);
+  let e=f(d.especificos||0);if(d.especificos_estimado)e+=' <span class="flag">ESTIMADO</span>';
+  document.getElementById('pv-esp').innerHTML=e;
+  document.getElementById('pv-total').textContent=`€${Number(d.total_anual||0).toLocaleString('pt-PT')}`;
+}
+
+// ── DECISION ──
+async function handleAccept(){
+  const b=document.getElementById('btn-accept');
+  b.innerHTML='<div class="cta-icon"><span class="spinner"></span></div><div class="cta-label">A processar...</div>';
+  try{
+    await fetch(`${CFG.base}${CFG.ep.accept}?token=${S.token}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:S.token,resposta:'aceito'})});
+    toast('Proposta aceite! Bem-vindo à Eixos.','success');
+    document.getElementById('contract-accepted-date').textContent=new Date().toLocaleDateString('pt-PT',{day:'numeric',month:'long',year:'numeric'});
+    setTimeout(()=>showCard('contract'),800);
+  }catch{toast('Erro. Tente novamente.','error');b.innerHTML='<div class="cta-icon">✓</div><div class="cta-label">Aceito</div><div class="cta-hint">Avançar para contrato</div>'}
+}
+async function sendReject(){
+  const reason=document.getElementById('reject-reason').value;
+  const b=document.getElementById('btn-send-reject');b.disabled=true;b.innerHTML='<span class="spinner dark"></span> A enviar...';
+  try{
+    await fetch(`${CFG.base}${CFG.ep.reject}?token=${S.token}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:S.token,resposta:'recusado',motivo:reason})});
+    document.getElementById('reject-area').classList.remove('show');
+    document.getElementById('reject-success').classList.remove('hidden');
+    document.getElementById('cta-buttons').classList.add('hidden');
+  }catch{toast('Erro ao enviar.','error');b.disabled=false;b.textContent='Enviar feedback →'}
+}
+
+// ── UTILS ──
+function fmtSize(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(0)+' KB';return(b/1048576).toFixed(1)+' MB'}
+function fmtDate(iso){return new Date(iso).toLocaleDateString('pt-PT',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})}
+function toast(msg,type){const c=document.getElementById('toast-wrap');const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{if(t.parentNode)t.remove()},5000)}
+
+// ── DEMO ──
+function initDemo(){
+  S.token='demo';S.name='Empresa Demo, Lda.';S.nif='123456789';
+  setHero(`${S.name} · NIF ${S.nif}`);
+  bindAll();showCard('upload');
+  document.addEventListener('keydown',e=>{
+    const m={1:'upload',2:()=>{S.uploadTs=new Date(Date.now()-26*36e5).toISOString();showCard('analysis');startPoll();updateAnalysis()},3:()=>{showCard('proposal');loadProposal()},4:'contract',5:'onboarding'};
+    const a=m[e.key];if(!a)return;if(typeof a==='function')a();else showCard(a);
+  });
+  console.log('🧪 Demo — Teclas 1-5 para navegar');
+}
+</script>
+</body>
+</html>
