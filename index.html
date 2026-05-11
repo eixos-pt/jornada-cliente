@@ -871,9 +871,13 @@ function bindAll(){
   document.getElementById('btn-send-reject').addEventListener('click',sendReject);
   document.getElementById('btn-download-prop').addEventListener('click',()=>{
     if(S.propData && S.propData.linkGamma){
-      window.open(S.propData.linkGamma,'_blank');
+      let url = S.propData.linkGamma;
+      // Extrair URL limpo se tiver texto extra (ex: "Ver Proposta - https://...")
+      const match = url.match(/https?:\/\/[^\s]+/);
+      if(match) url = match[0];
+      window.open(url,'_blank');
     } else {
-      toast('PDF a gerar...','info');
+      toast('Proposta ainda não disponível','info');
     }
   });
 }
