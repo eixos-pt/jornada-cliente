@@ -574,12 +574,10 @@
         <p>Cliente: <strong id="prop-client">—</strong> · Data: <strong id="prop-date">—</strong></p>
       </div>
       <div class="prop-body">
-        <div class="prop-line"><span class="prop-label">Contabilidade Mensal</span><span class="prop-value" id="pv-contab">—</span></div>
-        <div class="prop-line"><span class="prop-label">Imposto Selo (4%)</span><span class="prop-value" id="pv-selo">—</span></div>
-        <div class="prop-line"><span class="prop-label">Processamento Salarial</span><span class="prop-value" id="pv-sal">—</span></div>
-        <div class="prop-line"><span class="prop-label">Trabalhos Específicos</span><span class="prop-value" id="pv-esp">—</span></div>
+        <div class="prop-line"><span class="prop-label">Avença Mensal</span><span class="prop-value" id="pv-contab">—</span></div>
+        <div class="prop-line"><span class="prop-label">Avença Anual</span><span class="prop-value" id="pv-total-anual">—</span></div>
       </div>
-      <div class="prop-total"><span>Total Anual</span><span id="pv-total">—</span></div>
+      <div class="prop-total"><span>Total Anual (s/ IVA)</span><span id="pv-total">—</span></div>
       <div class="prop-note">⚠️ Valores marcados como [ESTIMADO] serão confirmados no contrato final.</div>
     </div>
 
@@ -794,7 +792,23 @@ async function loadState(){
     const r = await fetch(`${CFG.base}${CFG.ep.status}?token=${S.token}`);
     if (!r.ok) throw 0;
     const d = await r.json();
-    S.name=d.nome||''; S.nif=d.nif||''; S.uploadTs=d.upload_timestamp||null; S.propData=d.proposta||null;
+    S.name=d.nome||''; S.nif=d.nif||''; S.uploadTs=d.upload_timestamp||null;
+    
+    // Construir propData a partir dos dados do webhook
+    const hon = parseFloat(d.honorario) || 0;
+    if (hon > 0) {
+      S.propData = {
+        contabilidade: hon,
+        selo: Math.round(hon * 0.04),
+        salarios: 0,
+        especificos: 0,
+        especificos_estimado: false,
+        total_anual: hon * 12
+      };
+    } else {
+      S.propData = d.proposta || null;
+    }
+    
     setHero(`${S.name}${S.nif?' · NIF '+S.nif:''}`);
     applyEstado(d.estado);
   } catch { setHero('Bem-vindo à Eixos'); showCard('upload'); }
@@ -935,18 +949,16 @@ function updateAnalysis(){
 async function loadProposal(){
   if(S.propData){renderProp(S.propData);return}
   try{const r=await fetch(`${CFG.base}${CFG.ep.proposal}?token=${S.token}`);if(!r.ok)throw 0;S.propData=await r.json();renderProp(S.propData)}
-  catch{renderProp({contabilidade:250,selo:10,salarios:50,especificos:100,especificos_estimado:true,total_anual:4920})}
+  catch{renderProp({contabilidade:0,total_anual:0})}
 }
 function renderProp(d){
   document.getElementById('prop-client').textContent=S.name||'Cliente';
   document.getElementById('prop-date').textContent=new Date().toLocaleDateString('pt-PT');
-  const f=v=>`€${Number(v).toLocaleString('pt-PT')}/mês`;
-  document.getElementById('pv-contab').textContent=f(d.contabilidade||0);
-  document.getElementById('pv-selo').textContent=f(d.selo||0);
-  document.getElementById('pv-sal').textContent=f(d.salarios||0);
-  let e=f(d.especificos||0);if(d.especificos_estimado)e+=' <span class="flag">ESTIMADO</span>';
-  document.getElementById('pv-esp').innerHTML=e;
-  document.getElementById('pv-total').textContent=`€${Number(d.total_anual||0).toLocaleString('pt-PT')}`;
+  const hon = d.contabilidade || 0;
+  const anual = d.total_anual || (hon * 12);
+  document.getElementById('pv-contab').textContent=`€${Number(hon).toLocaleString('pt-PT')}/mês`;
+  document.getElementById('pv-total-anual').textContent=`€${Number(anual).toLocaleString('pt-PT')}`;
+  document.getElementById('pv-total').textContent=`€${Number(anual).toLocaleString('pt-PT')}`;
 }
 
 // ── DECISION ──
