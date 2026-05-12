@@ -650,7 +650,178 @@
         <li><span class="num">3</span><span>Agendamos a 1ª sessão de onboarding — setup, dados bancários, acessos.</span></li>
       </ul>
     </div>
+<!-- ============ F1c — UPLOAD DOCUMENTOS — HTML SNIPPET ============ -->
+<!-- ADICIONAR ANTES DO CARD 3 (sucesso) — aproximadamente linha 650 -->
 
+<!-- CARD F1c — UPLOAD DOCUMENTOS -->
+<div id="card-f1c" class="card hidden" style="margin: 24px 56px 96px;">
+  <div class="card-head">
+    <h2>Upload de <strong>Documentos</strong></h2>
+    <span class="badge">PASSO 1 / 5</span>
+  </div>
+  
+  <div class="card-head helper">
+    <p>Enviamos a lista dos documentos que precisamos para preparar a sua proposta. Pode carregar múltiplos ficheiros.</p>
+  </div>
+
+  <!-- Lista de documentos obrigatórios -->
+  <div style="margin-bottom: 30px;">
+    <h3 style="font-size: 18px; margin-bottom: 15px; color: var(--paper);">Documentos Obrigatórios:</h3>
+    <div id="f1c-docs-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <!-- Será preenchido dinamicamente por JavaScript -->
+    </div>
+  </div>
+
+  <!-- Drop zone -->
+  <div 
+    id="file-upload-area" 
+    data-f1c-dropzone
+    style="
+      border: 2px dashed var(--line-strong);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    "
+  >
+    <div style="font-size: 40px;">📄</div>
+    <p style="font-size: 16px; margin: 0;">Arraste ficheiros ou <strong>clique para seleccionar</strong></p>
+    <p style="font-size: 12px; color: var(--muted-soft); margin: 0;">
+      Formatos aceites: PDF, DOCX, XLS | Tamanho máximo: 10 MB
+    </p>
+  </div>
+
+  <!-- Input file (escondido) -->
+  <input 
+    type="file" 
+    id="file-input" 
+    multiple 
+    accept=".pdf,.docx,.xlsx,.xls,.doc"
+    style="display: none;"
+  >
+
+  <!-- Status do upload -->
+  <div id="f1c-upload-status" data-f1c-status style="margin-top: 20px; display: none;"></div>
+
+  <!-- Botões -->
+  <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: space-between;">
+    <button id="f1c-btn-back" style="
+      padding: 12px 24px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--paper);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    ">← Voltar</button>
+    
+    <button id="f1c-btn-continue" style="
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      background: var(--yellow);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    ">Continuar →</button>
+  </div>
+</div>
+
+<!-- ============ F1c — JAVASCRIPT ============ -->
+<script>
+// Configuração de documentos obrigatórios
+const F1C_DOCS_CONFIG = {
+  'existente': [
+    { name: 'Modelo 22', icon: '📊', hint: '(última disponível)' },
+    { name: 'IES', icon: '📋', hint: '(última disponível)' },
+    { name: 'Balancete', icon: '📈', hint: '(último disponível)' }
+  ],
+  'nova': [
+    { name: 'Certidão Permanente', icon: '🏛️', hint: '(Conservatória)' }
+  ]
+};
+
+// Preencher lista de docs obrigatórios
+function populateDocsList() {
+  const type = window.S?.type || 'existente';
+  const docs = F1C_DOCS_CONFIG[type] || [];
+  const list = document.getElementById('f1c-docs-list');
+  
+  if (!list) return;
+  
+  list.innerHTML = docs.map(doc => `
+    <div style="
+      padding: 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      text-align: center;
+    ">
+      <div style="font-size: 24px; margin-bottom: 8px;">${doc.icon}</div>
+      <div style="font-size: 13px; font-weight: 500;">${doc.name}</div>
+      <div style="font-size: 11px; color: var(--muted-soft); margin-top: 4px;">${doc.hint}</div>
+    </div>
+  `).join('');
+}
+
+// Ligar drop zone ao input file
+document.getElementById('file-upload-area')?.addEventListener('click', () => {
+  document.getElementById('file-input')?.click();
+});
+
+// Botão voltar
+document.getElementById('f1c-btn-back')?.addEventListener('click', () => {
+  document.getElementById('card-f1c').classList.add('hidden');
+  document.getElementById('card2').classList.remove('hidden');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+});
+
+// Botão continuar
+document.getElementById('f1c-btn-continue')?.addEventListener('click', () => {
+  const completeness = window.F1C?.checkCompleteness?.();
+  
+  if (completeness?.complete) {
+    // Todos os docs foram enviados — continuar para próximo passo
+    document.getElementById('card-f1c').classList.add('hidden');
+    document.getElementById('card3').classList.remove('hidden');
+    setStep(3);
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } else {
+    // Docs em falta
+    const missing = completeness?.missing?.join(', ') || 'documentos obrigatórios';
+    alert(`⚠️ Documentos em falta: ${missing}`);
+  }
+});
+
+// Inicializar quando documento carregar
+document.addEventListener('DOMContentLoaded', () => {
+  populateDocsList();
+});
+</script>
+
+<!-- ============ NOTAS DE IMPLEMENTAÇÃO ============ 
+PASSOS:
+1. Copiar este snippet COMPLETO
+2. Cola no index.html, ANTES da linha 650 (antes de card3)
+3. Adicionar <script src="F1c_upload-documentos.js"></script> antes de </body>
+4. Adicionar evento onclick ao "Continuar" para validar completude
+5. Testar drag-drop + upload
+
+FICHEIRO JS:
+- Deve estar no mesmo diretório que index.html OU
+- Ou incluso inline no <script> da página
+============ -->
     <div class="alert alert-success">
       <span class="alert-icon">🔒</span>
       <span>Os seus documentos estão seguros e serão migrados para a plataforma Eixos após assinatura.</span>
@@ -1009,7 +1180,350 @@ function initDemo(){
     const a=m[e.key];if(!a)return;if(typeof a==='function')a();else showCard(a);
   });
   console.log('🧪 Demo — Teclas 1-5 para navegar');
+/* ============ F1c — UPLOAD DOCUMENTOS ============ */
+
+const F1C_CONFIG = {
+  webhookUrl: 'https://eixosautomacao.app.n8n.cloud/webhook-test/upload-documento',
+  maxFileSize: 10 * 1024 * 1024, // 10MB
+  allowedTypes: ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+  allowedExtensions: ['.pdf', '.docx', '.xls', '.xlsx'],
+  requiredDocs: {
+    'existente': ['Modelo 22', 'IES', 'Balancete'],
+    'nova': ['Certidão Permanente']
+  }
+};
+
+// Estado de upload
+let F1C_STATE = {
+  uploads: {}, // { docName: { file, size, timestamp, status } }
+  clientToken: null
+};
+
+// ========== INICIALIZAR F1c ==========
+function initF1c() {
+  // Pega token do cliente (global S.token)
+  F1C_STATE.clientToken = window.S?.token || null;
+  
+  if (!F1C_STATE.clientToken) {
+    console.warn('F1c: Token de cliente não encontrado');
+    return;
+  }
+
+  setupDragDrop();
+  setupFileInput();
+  console.log('✅ F1c inicializado — Token:', F1C_STATE.clientToken);
 }
+
+// ========== DRAG & DROP ==========
+function setupDragDrop() {
+  const dropZone = document.querySelector('[data-f1c-dropzone]') || 
+                    document.querySelector('.drop-zone') ||
+                    document.getElementById('file-upload-area');
+  
+  if (!dropZone) {
+    console.warn('F1c: Drop zone não encontrada');
+    return;
+  }
+
+  // Eventos drag
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag-active');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('drag-active');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-active');
+    handleFileSelection(e.dataTransfer.files);
+  });
+}
+
+// ========== FILE INPUT ==========
+function setupFileInput() {
+  const fileInput = document.getElementById('file-input') || 
+                    document.querySelector('input[type="file"]');
+  
+  if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+      handleFileSelection(e.target.files);
+    });
+  }
+}
+
+// ========== PROCESSAR FICHEIROS ==========
+async function handleFileSelection(files) {
+  for (const file of files) {
+    await processFile(file);
+  }
+  updateUploadStatus();
+}
+
+async function processFile(file) {
+  // Validações
+  const validation = validateFile(file);
+  if (!validation.valid) {
+    showError(validation.error);
+    return;
+  }
+
+  // Ler ficheiro como base64
+  const base64 = await fileToBase64(file);
+  
+  // Guardar no estado
+  const docName = identifyDocType(file.name);
+  F1C_STATE.uploads[docName] = {
+    file: file,
+    size: file.size,
+    timestamp: new Date().toISOString(),
+    status: 'pending',
+    base64: base64
+  };
+
+  // Enviar para n8n
+  await uploadToN8n(file, base64, docName);
+}
+
+// ========== VALIDAR FICHEIRO ==========
+function validateFile(file) {
+  // Tipo
+  if (!F1C_CONFIG.allowedTypes.includes(file.type) && 
+      !F1C_CONFIG.allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext))) {
+    return {
+      valid: false,
+      error: `❌ Tipo de ficheiro não permitido: ${file.name}. Use PDF, DOCX ou XLS.`
+    };
+  }
+
+  // Tamanho
+  if (file.size > F1C_CONFIG.maxFileSize) {
+    return {
+      valid: false,
+      error: `❌ Ficheiro muito grande: ${(file.size / 1024 / 1024).toFixed(2)} MB. Máximo: 10 MB.`
+    };
+  }
+
+  return { valid: true };
+}
+
+// ========== CONVERTER PARA BASE64 ==========
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      // Remove data URL prefix (e.g., "data:application/pdf;base64,")
+      const base64 = reader.result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ========== IDENTIFICAR TIPO DE DOCUMENTO ==========
+function identifyDocType(fileName) {
+  const nameLower = fileName.toLowerCase();
+  
+  if (nameLower.includes('modelo') || nameLower.includes('mod') || nameLower.includes('22')) return 'Modelo 22';
+  if (nameLower.includes('ies') || nameLower.includes('rendimento')) return 'IES';
+  if (nameLower.includes('balancete') || nameLower.includes('balanc')) return 'Balancete';
+  if (nameLower.includes('listagem') || nameLower.includes('fatura') || nameLower.includes('e-fatura')) return 'Listagem e-Fatura';
+  if (nameLower.includes('certidao') || nameLower.includes('certidão') || nameLower.includes('permanente')) return 'Certidão Permanente';
+  
+  // Default: nome do ficheiro
+  return fileName;
+}
+
+// ========== UPLOAD PARA N8N ==========
+async function uploadToN8n(file, base64, docName) {
+  try {
+    // Atualizar status
+    F1C_STATE.uploads[docName].status = 'uploading';
+    showStatus(`📤 A enviar ${docName}...`);
+
+    const payload = {
+      token: F1C_STATE.clientToken,
+      fileName: file.name,
+      fileSize: file.size,
+      fileMimeType: file.type,
+      fileBase64: base64,
+      docType: docName,
+      timestamp: new Date().toISOString()
+    };
+
+    const response = await fetch(F1C_CONFIG.webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    // Atualizar estado
+    F1C_STATE.uploads[docName].status = 'success';
+    F1C_STATE.uploads[docName].sharePointUrl = result.sharePointUrl || null;
+    F1C_STATE.uploads[docName].mondayLinkId = result.mondayLinkId || null;
+
+    showSuccess(`✅ ${docName} enviado com sucesso!`);
+    
+  } catch (error) {
+    F1C_STATE.uploads[docName].status = 'error';
+    F1C_STATE.uploads[docName].error = error.message;
+    showError(`❌ Erro ao enviar ${docName}: ${error.message}`);
+  }
+}
+
+// ========== ATUALIZAR STATUS UI ==========
+function updateUploadStatus() {
+  const statusContainer = document.getElementById('f1c-upload-status');
+  if (!statusContainer) return;
+
+  const html = Object.entries(F1C_STATE.uploads).map(([docName, data]) => {
+    const icon = {
+      'pending': '⏳',
+      'uploading': '📤',
+      'success': '✅',
+      'error': '❌'
+    }[data.status] || '❓';
+
+    const size = (data.size / 1024).toFixed(1);
+    return `<div class="f1c-upload-item">${icon} ${docName} (${size} KB)</div>`;
+  }).join('');
+
+  statusContainer.innerHTML = html;
+}
+
+// ========== VERIFICAR COMPLETUDE ==========
+function checkCompleteness() {
+  const clientType = window.S?.type; // 'existente' ou 'nova'
+  if (!clientType) return false;
+
+  const required = F1C_CONFIG.requiredDocs[clientType] || [];
+  const uploaded = Object.keys(F1C_STATE.uploads);
+  
+  const allPresent = required.every(doc => 
+    uploaded.some(up => up.includes(doc))
+  );
+
+  return allPresent ? { complete: true, missing: [] } : { 
+    complete: false, 
+    missing: required.filter(doc => !uploaded.some(up => up.includes(doc)))
+  };
+}
+
+// ========== MENSAGENS UI ==========
+function showError(message) {
+  const alert = document.createElement('div');
+  alert.className = 'f1c-alert f1c-alert-error';
+  alert.textContent = message;
+  document.body.appendChild(alert);
+  setTimeout(() => alert.remove(), 5000);
+}
+
+function showSuccess(message) {
+  const alert = document.createElement('div');
+  alert.className = 'f1c-alert f1c-alert-success';
+  alert.textContent = message;
+  document.body.appendChild(alert);
+  setTimeout(() => alert.remove(), 5000);
+}
+
+function showStatus(message) {
+  const status = document.getElementById('f1c-status') || 
+                 document.querySelector('[data-f1c-status]');
+  if (status) {
+    status.textContent = message;
+  }
+}
+
+// ========== ESTILOS CSS ==========
+const F1C_STYLES = `
+.f1c-alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 10000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.f1c-alert-error {
+  background: #c0392b;
+  color: white;
+  border-left: 4px solid #a93226;
+}
+
+.f1c-alert-success {
+  background: #27ae60;
+  color: white;
+  border-left: 4px solid #229954;
+}
+
+.f1c-upload-status {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.f1c-upload-item {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.f1c-upload-item:last-child {
+  border-bottom: none;
+}
+
+.drag-active {
+  border-color: var(--yellow);
+  background: rgba(255, 214, 10, 0.08);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+`;
+
+// ========== INJETAR ESTILOS ==========
+const styleSheet = document.createElement('style');
+styleSheet.textContent = F1C_STYLES;
+document.head.appendChild(styleSheet);
+
+// ========== INICIAR F1c QUANDO DOM PRONTO ==========
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initF1c);
+} else {
+  initF1c();
+}
+
+// ========== EXPORTAR PARA GLOBAL ==========
+window.F1C = {
+  getState: () => F1C_STATE,
+  checkCompleteness: checkCompleteness,
+  getUploads: () => Object.keys(F1C_STATE.uploads)
+};
+
+console.log('✅ F1c — Upload Documentos — Carregado');}
 </script>
 </body>
 </html>
